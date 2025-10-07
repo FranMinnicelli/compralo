@@ -54,7 +54,7 @@ public class ProductoService {
      * @param profundidad la distancia máxima respecto al nodo ingresado como raiz.
      * @return el conjunto de productos relacionados.
      */
-    public Set<Producto> encontrarProductosRelacionados(Producto raiz, int profundidad) {
+    public Set<Producto> encontrarProductosRelacionados(Producto raiz, int profundidad, Set<Producto> descartados) {
         PriorityQueue<Producto> pendiente = new PriorityQueue<>();
         Set<Producto> visitados = new HashSet<>();
         int nivel = 0;
@@ -68,9 +68,16 @@ public class ProductoService {
                 Producto producto = pendiente.poll();
 
                 if (producto != null) {
+                        // Poda: si el nodo actual está descartado, no lo expando
+                    if (descartados != null && descartados.contains(producto)) {
+                       
+                        continue;
+                    }
+
+
                     if (!visitados.contains(producto)) {
                         visitados.add(producto);
-
+                        
                         for (Relacion relacion : producto.getRelacionados()) {
                             repo.findById(relacion.getProducto().getId()).ifPresent(pendiente::add);
                         }

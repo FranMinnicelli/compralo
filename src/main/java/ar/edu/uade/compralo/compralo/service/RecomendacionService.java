@@ -14,11 +14,14 @@ import java.util.Set;
 public class RecomendacionService {
     private static final int MAXIMA_PROFUNDIDAD = 2;
     private final ProductoService productoService;
+    private final CarritoService carritoService;
 
     public Set<Producto> obtenerRecomendaciones(Producto producto, int n) {
-        Set<Producto> productos = productoService.encontrarProductosRelacionados(producto, MAXIMA_PROFUNDIDAD);
+        Set<Producto> descartados = new HashSet<>(carritoService.getDescartados());
+        Set<Producto> productos = productoService.encontrarProductosRelacionados(producto, MAXIMA_PROFUNDIDAD, descartados);
 
-        Map<Producto, Double> distancias = DijkstraUtils.calcularCaminos(productos, producto);
+        Map<Producto, Double> distancias = 
+        DijkstraUtils.calcularCaminos(productos, producto, carritoService.getDescartados());
 
         DPUtils dp = new DPUtils(distancias, n);
         
