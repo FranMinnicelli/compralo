@@ -21,10 +21,11 @@ public class RecomendacionService {
     private final CarritoService carritoService;
 
     public Set<Producto> obtenerRecomendaciones(Producto producto, int n) {
-        Set<Producto> productos = productoService.encontrarProductosRelacionados(producto, MAXIMA_PROFUNDIDAD);
+        Set<Producto> descartados = new HashSet<>(carritoService.getDescartados());
+        Set<Producto> productos = productoService.encontrarProductosRelacionados(producto, MAXIMA_PROFUNDIDAD, descartados);
 
         Map<Producto, Double> distancias = 
-    DijkstraUtils.calcularCaminos(productos, producto, carritoService.getDescartados());
+        DijkstraUtils.calcularCaminos(productos, producto, carritoService.getDescartados());
 
         List<Distancia> distanciasOrdenadas = MapaUtils.ordenarMapa(distancias);
         //algoritmo greedy

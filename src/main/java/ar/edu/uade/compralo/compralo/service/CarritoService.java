@@ -12,7 +12,7 @@ import java.util.Set;
 public class CarritoService {
 
     private final Set<Producto> descartados = new HashSet<>();
-
+    
     /**
      * Agrega un producto a la lista de descarte.
      */

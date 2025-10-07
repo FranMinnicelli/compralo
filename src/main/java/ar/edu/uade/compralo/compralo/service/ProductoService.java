@@ -54,7 +54,7 @@ public class ProductoService {
      * @param profundidad la distancia máxima respecto al nodo ingresado como raiz.
      * @return el conjunto de productos relacionados.
      */
-    public Set<Producto> encontrarProductosRelacionados(Producto raiz, int profundidad) {
+    public Set<Producto> encontrarProductosRelacionados(Producto raiz, int profundidad, Set<Producto> descartados) {
         PriorityQueue<Producto> pendiente = new PriorityQueue<>();
         Set<Producto> visitados = new HashSet<>();
         int nivel = 0;
