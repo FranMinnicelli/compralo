@@ -6,6 +6,7 @@ import ar.edu.uade.compralo.compralo.utils.DijkstraUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -14,17 +15,18 @@ import java.util.Set;
 public class RecomendacionService {
     private static final int MAXIMA_PROFUNDIDAD = 2;
     private final ProductoService productoService;
-    private final CarritoService carritoService;
 
     public Set<Producto> obtenerRecomendaciones(Producto producto, int n) {
-        Set<Producto> descartados = new HashSet<>(carritoService.getDescartados());
-        Set<Producto> productos = productoService.encontrarProductosRelacionados(producto, MAXIMA_PROFUNDIDAD, descartados);
+        Set<Producto> productos = productoService.encontrarProductosRelacionados(producto, MAXIMA_PROFUNDIDAD);
 
-        Map<Producto, Double> distancias = 
-        DijkstraUtils.calcularCaminos(productos, producto, carritoService.getDescartados());
+        Map<Producto, Double> distancias = DijkstraUtils.calcularCaminos(productos, producto);
 
         DPUtils dp = new DPUtils(distancias, n);
         
         return dp.nRecomendaciones();
+    }
+
+    public void descartarRecomendacion(Producto producto) {
+        productoService.descartarProducto(producto);
     }
 }

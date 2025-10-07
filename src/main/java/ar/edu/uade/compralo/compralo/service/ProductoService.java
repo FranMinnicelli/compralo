@@ -16,6 +16,7 @@ import java.util.Set;
 public class ProductoService {
     private static final Double PESO_INICIAL = 1.0;
     private final ProductoRepository repo;
+    private final Set<Producto> descartados = new HashSet<>();
 
     public void relacionarProductos(Producto productoA, Producto productoB) {
         Relacion relacionExistente = null;
@@ -54,7 +55,7 @@ public class ProductoService {
      * @param profundidad la distancia máxima respecto al nodo ingresado como raiz.
      * @return el conjunto de productos relacionados.
      */
-    public Set<Producto> encontrarProductosRelacionados(Producto raiz, int profundidad, Set<Producto> descartados) {
+    public Set<Producto> encontrarProductosRelacionados(Producto raiz, int profundidad) {
         PriorityQueue<Producto> pendiente = new PriorityQueue<>();
         Set<Producto> visitados = new HashSet<>();
         int nivel = 0;
@@ -68,9 +69,8 @@ public class ProductoService {
                 Producto producto = pendiente.poll();
 
                 if (producto != null) {
-                        // Poda: si el nodo actual está descartado, no lo expando
-                    if (descartados != null && descartados.contains(producto)) {
-                       
+                    // Poda: si el nodo actual está descartado, no lo expando
+                    if (descartados.contains(producto)) {
                         continue;
                     }
 
@@ -89,5 +89,9 @@ public class ProductoService {
         }
 
         return visitados;
+    }
+
+    public void descartarProducto(Producto producto) {
+        descartados.add(producto);
     }
 }
